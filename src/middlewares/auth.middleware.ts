@@ -26,8 +26,9 @@ export const authMiddleware = async(
 
     if (requireAdmin && user.role !== "admin") {
       res.status(403).json({ error: "Forbidden user!" });
+      return;
     }
-    
+
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
