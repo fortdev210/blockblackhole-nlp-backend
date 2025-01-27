@@ -2,7 +2,7 @@
 
 import { createDatabase } from "typeorm-extension";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { UserEntity } from "@/entities";
+import { UserEntity, FeedbackEntity } from "@/entities";
 import { AppDataSource } from "./datasource";
 import bcrypt from "bcryptjs";
 import { authService } from "@/services";
@@ -20,7 +20,7 @@ export const databaseSetup = async (): Promise<void> => {
       port: Number(process.env.DB_PORT) || 5432,
       database: process.env.DB_DATABASE,
       synchronize: true,
-      entities: [UserEntity],
+      entities: [UserEntity, FeedbackEntity],
       entitySkipConstructor: true,
       namingStrategy: new SnakeNamingStrategy(),
     },

@@ -11,6 +11,6 @@ export class FeedbackEntity extends CoreEntity {
     @Column({ length: 1000 })
     text: string;
 
-    @Column()
+    @Column("float")
     score: number;
 }

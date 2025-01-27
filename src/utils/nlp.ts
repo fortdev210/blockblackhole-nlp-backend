@@ -1,19 +1,7 @@
 import natural from "natural";
-import stopword from "stopword";
-
-import { WORD_DICT } from "./const";
-
-export const convertToStandard = (text:string):string => {
-    const data = text.split(' ');
-    data.forEach((word, ind) => {
-        Object.keys(WORD_DICT).forEach(key => { 
-            if (key === word.toLowerCase()) { 
-                data[ind] = WORD_DICT[key] 
-            }; 
-        });
-    })
-    return data.join(' ')
-}
+import { removeStopwords } from "stopword";
+import aposToLexform from "apos-to-lex-form"
+import { Logger } from './logger'
 
 export const convertToLowerCase = (text:string):string => {
     return text.toLowerCase();
@@ -27,7 +15,7 @@ export const removeNonAlpha = (text: string): string => {
 export const getAnalysis = (text: string): number => {
   // NLP Logic
   // Convert all data to its standard form
-  const lexData = convertToStandard(text);
+  const lexData = aposToLexform(text);
 
   // Convert all data to lowercase
   const lowerCaseData = convertToLowerCase(lexData);
@@ -38,11 +26,9 @@ export const getAnalysis = (text: string): number => {
   // Tokenization
   const tokenConstructor = new natural.WordTokenizer();
   const tokenizedData = tokenConstructor.tokenize(onlyAlpha);
-  console.log("Tokenized Data: ", tokenizedData);
 
   // Remove Stopwords
-  const filteredData = stopword.removeStopwords(tokenizedData);
-  console.log("After removing stopwords: ", filteredData);
+  const filteredData = removeStopwords(tokenizedData);
 
   // Stemming
   const Sentianalyzer = new natural.SentimentAnalyzer(
@@ -51,6 +37,8 @@ export const getAnalysis = (text: string): number => {
     "afinn"
   );
   const analysis_score = Sentianalyzer.getSentiment(filteredData);
-
+  Logger.info(
+    "Text: ", text,
+    "Analysis score: ", analysis_score)
   return analysis_score
 };
