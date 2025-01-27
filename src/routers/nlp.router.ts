@@ -2,8 +2,9 @@
 
 import { nlpController } from "@/controllers";
 import { Router } from "express";
+import { authMiddleware } from "@/middlewares/auth.middleware"
 
 export const nlpRouter = Router();
 
-nlpRouter.post("/feedbacks", nlpController.addNewFeedback);
-nlpRouter.get("/feedbacks", nlpController.getFeedbacks)
+nlpRouter.post("/feedbacks", (req, res, next)=> {authMiddleware(req, res, next, false)}, nlpController.addNewFeedback);
+nlpRouter.get("/feedbacks", (req, res, next)=> {authMiddleware(req, res, next, true)}, nlpController.getFeedbacks)
