@@ -7,18 +7,16 @@ import { CreateUserRequestType } from "@/types";
 export const createUser = async ({
   name,
   hashedPassword,
-  role,
 }: CreateUserRequestType): Promise<UserEntity | null> => {
   const userRepository = AppDataSource.getRepository(UserEntity);
 
   const existingUser = await userRepository.findOne({ where: { name } });
-
   if (existingUser) {
     return null;
   }
 
   const newUser = new UserEntity();
-  Object.assign(newUser, { name, hashedPassword, role });
+  Object.assign(newUser, { name, hashedPassword });
 
   return await userRepository.save(newUser);
 };

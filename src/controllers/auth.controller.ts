@@ -8,18 +8,26 @@ import "dotenv/config";
 import { errorHandlerWrapper } from "@/utils";
 
 const signUpHandler = async (req: Request, res: Response) => {
-  const { name, password, role } = req.body;
+  const { name, password } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await authService.createUser({
     name,
     hashedPassword,
-    role,
   });
 
+  const token = jwt.sign({ username: newUser.name }, process.env.JWT_SECRET, {
+    expiresIn: "24h",
+  });
+
+
   if (newUser) {
-    res.status(201).json(newUser);
+    res.status(201).json({
+      token: token,
+      isAdmin: newUser.role === "admin",
+      username: newUser.name,
+    });
   } else {
     res.status(409).json({ message: "User already exists" });
   }

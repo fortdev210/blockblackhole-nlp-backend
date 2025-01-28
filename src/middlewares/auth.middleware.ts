@@ -10,7 +10,7 @@ export const authMiddleware = async(
   next: NextFunction,
   requireAdmin: boolean=false
 ) => {
-  const token = req.header("Authorization").replace("Bearer ", "");
+  const token = req.header("Authorization")? req.header("Authorization").replace("Bearer ", ""): null;
 
   if (!token) {
     res.status(401).json({ error: "Authentication required!" });
