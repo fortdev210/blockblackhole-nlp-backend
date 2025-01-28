@@ -11,6 +11,14 @@ export const addFeedback = async(text:string) => {
     return await feedbackRepository.save(newFeedback)
 }
 
-export const getFeedbackList = async () => {
-    return await AppDataSource.getRepository(FeedbackEntity).find()||[]
+export const getFeedbackList = async (curPage: number, limit: number) => {
+    const [results, total] =  await AppDataSource.getRepository(FeedbackEntity).findAndCount({
+        take: limit,
+        skip: (curPage - 1) * limit
+    })
+
+    return {
+        results,
+        total
+    }
 }

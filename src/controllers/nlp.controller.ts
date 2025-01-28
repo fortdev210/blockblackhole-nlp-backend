@@ -18,7 +18,10 @@ const addFeedbackHandler = async (req: Request, res: Response) => {
 };
 
 const getFeedbacksHandler = async (req: Request, res: Response) => {
-  const feedbacks = await getFeedbackList();
+  const curPage = req.query.curPage as any;
+  const limit = req.query.limit as any;
+
+  const feedbacks = await getFeedbackList(curPage, limit);
   res.status(200).json(feedbacks);
 };
 
