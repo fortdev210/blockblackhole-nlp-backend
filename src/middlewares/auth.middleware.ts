@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { authService } from "@/services";
 
-export const authMiddleware = (
+export const authMiddleware = async(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
+  requireAdmin: boolean=false
 ) => {
-  const token = req.header("Authorization").replace("Bearer ", "");
+  const token = req.header("Authorization")? req.header("Authorization").replace("Bearer ", ""): null;
 
   if (!token) {
     res.status(401).json({ error: "Authentication required!" });
@@ -19,11 +20,18 @@ export const authMiddleware = (
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = authService.getUser(decoded);
+    const user = await authService.getUser(decoded);
 
     if (!user) throw "User Not Found!";
+
+    if (requireAdmin && user.role !== "admin") {
+      res.status(403).json({ error: "Forbidden user!" });
+      return;
+    }
+
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
   }
 };
+
