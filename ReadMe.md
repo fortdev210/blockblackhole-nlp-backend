@@ -1,4 +1,4 @@
-# Home Assignment: Sentiment Analysis Application
+# Sentiment Analysis Application Backend
 
 ## Description
 
